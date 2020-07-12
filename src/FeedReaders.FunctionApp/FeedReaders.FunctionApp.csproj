@@ -1,14 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AzureFunctionsVersion>v3</AzureFunctionsVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aliencube.AzureFunctions.Extensions.DependencyInjection" Version="2.2.0" />
-    <PackageReference Include="Aliencube.AzureFunctions.Extensions.OpenApi" Version="1.5.4" />
+    <PackageReference Include="Aliencube.AzureFunctions.Extensions.OpenApi" Version="1.7.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.0.0" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FeedReaders\FeedReaders.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,7 +25,4 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\FeedReaders\FeedReaders.csproj" />
-  </ItemGroup>
 </Project>

@@ -1,11 +1,28 @@
 {
-    "version": "2.0",
-    "logging": {
-        "applicationInsights": {
-            "samplingExcludedTypes": "Request",
-            "samplingSettings": {
-                "isEnabled": true
-            }
-        }
+  "version": "2.0",
+  "logging": {
+    "applicationInsights": {
+      "samplingSettings": {
+        "isEnabled": true,
+        "excludedTypes": "Request"
+      }
     }
+  },
+  "openApi": {
+    "info": {
+      "version": "1.0.0",
+      "title": "RSS/ATOM Feed Reader",
+      "description": "A simple RSS/ATOM feed reader from blogs, YouTube channels and/or other social channels that provide RSS/ATOM feeds.",
+      "termsOfService": "https://github.com/aliencube/Social-Media-Integration",
+      "contact": {
+        "name": "Aliencube Community",
+        "email": "no-reply@aliencube.org",
+        "url": "https://github.com/aliencube/Social-Media-Integration/issues",
+      },
+      "license": {
+        "name": "MIT",
+        "url": "http://opensource.org/licenses/MIT",
+      }
+    }
+  }
 }

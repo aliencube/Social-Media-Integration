@@ -4,16 +4,6 @@
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
 
-    "OpenApi__Info__Version": "1.0.0",
-    "OpenApi__Info__Title": "RSS/ATOM Feed Reader",
-    "OpenApi__Info__Description": "A simple RSS/ATOM feed reader from blogs, YouTube channels and/or other social channels that provide RSS/ATOM feeds.",
-    "OpenApi__Info__TermsOfService": "https://github.com/aliencube/Social-Media-Integration",
-    "OpenApi__Info__Contact__Name": "Aliencube Community",
-    "OpenApi__Info__Contact__Email": "no-reply@aliencube.org",
-    "OpenApi__Info__Contact__Url": "https://github.com/aliencube/Social-Media-Integration/issues",
-    "OpenApi__Info__License__Name": "MIT",
-    "OpenApi__Info__License__Url": "http://opensource.org/licenses/MIT",
-
     "OpenApi__ApiKey": ""
   }
 }
