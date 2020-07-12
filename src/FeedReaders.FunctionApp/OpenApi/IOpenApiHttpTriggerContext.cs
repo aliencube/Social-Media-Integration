@@ -76,4 +76,3 @@ namespace FeedReaders.FunctionApp
         string GetSwaggerAuthKey(string key = "OpenApi__ApiKey");
     }
 }
-

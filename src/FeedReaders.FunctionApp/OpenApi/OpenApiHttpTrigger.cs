@@ -126,4 +126,3 @@ namespace FeedReaders.FunctionApp
         }
     }
 }
-

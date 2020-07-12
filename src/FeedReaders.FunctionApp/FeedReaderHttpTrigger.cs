@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -7,7 +8,7 @@ using Aliencube.AzureFunctions.Extensions.OpenApi.Enums;
 
 using FeedReaders.FunctionApp.Handlers;
 using FeedReaders.FunctionApp.Models;
-using FeedReaders.Models;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -43,7 +44,7 @@ namespace FeedReaders.FunctionApp
         [FunctionName(nameof(FeedReaderHttpTrigger.GetFeedItemsAsync))]
         [OpenApiOperation(operationId: "getFeedItems", tags: new[] { "feedItem" }, Summary = "Gets a list of feed items from the given feed", Description = "This operation returns a list of feed items from the given feed URI.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(FeedReaderRequest), Description = "Feed reader request payload")]
-        [OpenApiResponseBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(FeedReaderResponse), Summary = "List of feed reader response payload")]
+        [OpenApiResponseBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(List<FeedReaderResponse>), Summary = "List of feed reader response payload")]
         public async Task<IActionResult> GetFeedItemsAsync(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "feeds/items")] HttpRequest req,
             ILogger log)
