@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ServiceModel.Syndication;
 using System.Threading.Tasks;
 using System.Xml;
@@ -20,6 +21,12 @@ namespace FeedReaders
         protected FeedReader()
         {
             this._random = new Random();
+        }
+
+        /// <inheritdoc />
+        public virtual async Task<List<FeedItem>> GetFeedItemsAsync(FeedReaderContext context)
+        {
+            return await Task.FromResult(default(List<FeedItem>));
         }
 
         /// <inheritdoc />

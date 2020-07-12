@@ -39,6 +39,49 @@ namespace FeedReaders.FunctionApp
         /// </summary>
         /// <param name="req"><see cref="HttpRequest"/> instance.</param>
         /// <param name="log"><see cref="ILogger"/> instance.</param>
+        /// <returns>Returns the list of feed items as a response.</returns>
+        [FunctionName(nameof(FeedReaderHttpTrigger.GetFeedItemsAsync))]
+        [OpenApiOperation(operationId: "getFeedItems", tags: new[] { "feedItem" }, Summary = "Gets a list of feed items from the given feed", Description = "This operation returns a list of feed items from the given feed URI.", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(FeedReaderRequest), Description = "Feed reader request payload")]
+        [OpenApiResponseBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(FeedReaderResponse), Summary = "List of feed reader response payload")]
+        public async Task<IActionResult> GetFeedItemsAsync(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "feeds/items")] HttpRequest req,
+            ILogger log)
+        {
+            log.LogInformation("C# HTTP trigger function processed a request.");
+
+            var request = await this._handler
+                                    .DeserialiseAsync<FeedReaderRequest>(req.Body)
+                                    .ConfigureAwait(false);
+
+            var result = default(IActionResult);
+            try
+            {
+                var feedItems = await this._resolver
+                                          .Resolve(request.FeedSource)
+                                          .GetFeedItemsAsync(request)
+                                          .ConfigureAwait(false);
+                var responses = FeedReaderResponse.Clone(feedItems);
+
+                result = new OkObjectResult(responses);
+            }
+            catch (Exception ex)
+            {
+                var error = new { message = ex.Message };
+                result = new ObjectResult(error)
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            } 
+
+            return result;
+        }
+
+        /// <summary>
+        /// Gets the feed item.
+        /// </summary>
+        /// <param name="req"><see cref="HttpRequest"/> instance.</param>
+        /// <param name="log"><see cref="ILogger"/> instance.</param>
         /// <returns>Returns the feed item as a response.</returns>
         [FunctionName(nameof(FeedReaderHttpTrigger.GetFeedItemAsync))]
         [OpenApiOperation(operationId: "getFeedItem", tags: new[] { "feedItem" }, Summary = "Gets a single feed item from the given feed", Description = "This operation returns a single feed item from the given feed URI.", Visibility = OpenApiVisibilityType.Important)]

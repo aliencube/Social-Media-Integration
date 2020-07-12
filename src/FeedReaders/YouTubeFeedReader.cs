@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel.Syndication;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ namespace FeedReaders
         }
 
         /// <inheritdoc />
-        public override async Task<FeedItem> GetFeedItemAsync(FeedReaderContext context)
+        public override async Task<List<FeedItem>> GetFeedItemsAsync(FeedReaderContext context)
         {
             var feed = await this.LoadFeedAsync(context.FeedUri).ConfigureAwait(false);
 
@@ -32,9 +33,18 @@ namespace FeedReaders
                             .Take(context.NumberOfFeedItems)
                             .ToList();
 
-            var index = this.GetSkipNumber(context.NumberOfFeedItems > items.Count ? items.Count : context.NumberOfFeedItems, context.IsRandom);
-            var item = items.Skip(index).Take(1).SingleOrDefault();
-            var feedItem = this.BuildFeedItem(item);
+            var feedItems = items.Select(p => this.BuildFeedItem(p)).ToList();
+
+            return feedItems;
+        }
+
+        /// <inheritdoc />
+        public override async Task<FeedItem> GetFeedItemAsync(FeedReaderContext context)
+        {
+            var feedItems = await this.GetFeedItemsAsync(context).ConfigureAwait(false);
+
+            var index = this.GetSkipNumber(context.NumberOfFeedItems > feedItems.Count ? feedItems.Count : context.NumberOfFeedItems, context.IsRandom);
+            var feedItem = feedItems.Skip(index).Take(1).SingleOrDefault();
 
             return feedItem;
         }
