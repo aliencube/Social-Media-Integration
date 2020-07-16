@@ -24,6 +24,7 @@ namespace FeedReaders.FunctionApp
     {
         private readonly IRequestPayloadHandler _handler;
         private readonly IFeedReaderResolver _resolver;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FeedReaderHttpTrigger"/> class.
         /// </summary>

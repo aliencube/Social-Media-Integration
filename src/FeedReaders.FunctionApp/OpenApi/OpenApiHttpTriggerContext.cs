@@ -11,7 +11,7 @@ using Aliencube.AzureFunctions.Extensions.OpenApi.Resolvers;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 
-namespace FeedReaders.FunctionApp
+namespace Aliencube.AzureFunctions.Extensions.OpenApi
 {
     /// <summary>
     /// This represents the context entity for <see cref="OpenApiHttpTrigger"/>.

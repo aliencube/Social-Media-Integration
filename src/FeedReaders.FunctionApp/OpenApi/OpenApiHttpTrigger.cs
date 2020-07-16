@@ -10,7 +10,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 
-namespace FeedReaders.FunctionApp
+namespace Aliencube.AzureFunctions.Extensions.OpenApi
 {
     /// <summary>
     /// This represents the HTTP trigger entity for Open API documents.
