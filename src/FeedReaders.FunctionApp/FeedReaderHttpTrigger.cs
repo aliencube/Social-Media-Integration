@@ -45,7 +45,7 @@ namespace FeedReaders.FunctionApp
         [FunctionName(nameof(FeedReaderHttpTrigger.GetFeedItemsAsync))]
         [OpenApiOperation(operationId: "getFeedItems", tags: new[] { "feedItem" }, Summary = "Gets a list of feed items from the given feed", Description = "This operation returns a list of feed items from the given feed URI.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(FeedReaderRequest), Description = "Feed reader request payload")]
-        [OpenApiResponseBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(List<FeedReaderResponse>), Summary = "List of feed reader response payload")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(List<FeedReaderResponse>), Summary = "List of feed reader response payload")]
         public async Task<IActionResult> GetFeedItemsAsync(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "feeds/items")] HttpRequest req,
             ILogger log)
@@ -74,7 +74,7 @@ namespace FeedReaders.FunctionApp
                 {
                     StatusCode = (int)HttpStatusCode.InternalServerError
                 };
-            } 
+            }
 
             return result;
         }
@@ -88,7 +88,7 @@ namespace FeedReaders.FunctionApp
         [FunctionName(nameof(FeedReaderHttpTrigger.GetFeedItemAsync))]
         [OpenApiOperation(operationId: "getFeedItem", tags: new[] { "feedItem" }, Summary = "Gets a single feed item from the given feed", Description = "This operation returns a single feed item from the given feed URI.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(FeedReaderRequest), Description = "Feed reader request payload")]
-        [OpenApiResponseBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(FeedReaderResponse), Summary = "Feed reader response payload")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(FeedReaderResponse), Summary = "Feed reader response payload")]
         public async Task<IActionResult> GetFeedItemAsync(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "feeds/item")] HttpRequest req,
             ILogger log)
@@ -117,7 +117,7 @@ namespace FeedReaders.FunctionApp
                 {
                     StatusCode = (int)HttpStatusCode.InternalServerError
                 };
-            } 
+            }
 
             return result;
         }
