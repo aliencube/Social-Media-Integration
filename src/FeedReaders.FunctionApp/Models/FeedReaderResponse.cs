@@ -41,6 +41,7 @@ namespace FeedReaders.FunctionApp.Models
                 Description = item.Description,
                 Link = item.Link,
                 ThumbnailLink = item.ThumbnailLink,
+                DatePublished = item.DatePublished,
             };
 
             return response;
