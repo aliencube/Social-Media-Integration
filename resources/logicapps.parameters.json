@@ -1,0 +1,52 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "name": {
+        "value": "<RESOURCE_NAME>"
+      },
+      "env": {
+        "value": "dev"
+      },
+      "suffix": {
+        "value": "latest"
+      },
+      "recurrenceFrequency": {
+        "value": "Day"
+      },
+      "recurrenceInterval": {
+        "value": 1
+      },
+      "recurrenceStartTime": {
+        "value": "<yyyy-MM-ddTHH:mm:ssZ>"
+      },
+      "recurrenceTimeZone": {
+        "value": "Korean Standard Time"
+      },
+      "feedSource": {
+        "value": "<BLOG | YOUTUBE>"
+      },
+      "feedUri": {
+        "value": "<FEED_URL>"
+      },
+      "feedNumberOfItems": {
+        "value": "<NUMBER_OF_FEED_ITEMS>"
+      },
+      "feedIsRandom": {
+        "value": "<TRUE | FALSE>"
+      },
+      "feedPrefixesExcluded": {
+        "value": "<PREFIXES>"
+      },
+      "feedPrefixesIncluded": {
+        "value": "<PREFIXES>"
+      },
+      "feedItemPickerUrl": {
+        "value": "<FEED_ITEM_PICKER_URL>"
+      },
+      "feedItemPickerAuthKey": {
+        "value": "<FEED_ITEM_PICKER_AUTH_KEY>"
+      }
+    }
+  }
+  
