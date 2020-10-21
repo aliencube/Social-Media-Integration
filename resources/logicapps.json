@@ -1,0 +1,319 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "type": "string"
+    },
+    "env": {
+      "type": "string",
+      "defaultValue": "dev",
+      "allowedValues": [
+        "dev",
+        "test",
+        "prod"
+      ]
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "locationCode": {
+      "type": "string",
+      "defaultValue": "wus2"
+    },
+    "suffix": {
+      "type": "string",
+      "defaultValue": "latest",
+      "allowedValues": [
+        "latest",
+        "random"
+      ]
+    },
+    "recurrenceFrequency": {
+      "type": "string"
+    },
+    "recurrenceInterval": {
+      "type": "int"
+    },
+    "recurrenceStartTime": {
+      "type": "string"
+    },
+    "recurrenceTimeZone": {
+      "type": "string",
+      "defaultValue": "Korea Standard Time"
+    },
+    "feedSource": {
+      "type": "string",
+      "allowedValues": [
+        "Blog",
+        "YouTube"
+      ]
+    },
+    "feedUri": {
+      "type": "string"
+    },
+    "feedNumberOfItems": {
+      "type": "int",
+      "defaultValue": 10
+    },
+    "feedIsRandom": {
+      "type": "bool",
+      "defaultValue": false
+    },
+    "feedPrefixesExcluded": {
+      "type": "string"
+    },
+    "feedPrefixesIncluded": {
+      "type": "string"
+    },
+    "feedItemPickerUrl": {
+      "type": "string"
+    },
+    "feedItemPickerAuthKey": {
+      "type": "secureString"
+    }
+  },
+  "functions": [],
+  "variables": {
+    "metadata": {
+      "longName": "[format('{{0}}-{0}-{1}-{2}-twitter', parameters('name'), parameters('env'), parameters('locationCode'))]",
+      "shortName": "[format('{{0}}{0}{1}{2}', parameters('name'), parameters('env'), parameters('locationCode'))]"
+    },
+    "apiConnTwitter": {
+      "connectionId": "[format('{0}/providers/Microsoft.Web/connections/{1}-{{0}}', resourceGroup().id, format(variables('metadata').longName, 'apicon'))]",
+      "connectionName": "[format('{0}-{{0}}', format(variables('metadata').longName, 'apicon'))]",
+      "id": "[format('{0}/providers/Microsoft.Web/locations/{1}/managedApis/twitter', subscription().id, parameters('location'))]",
+      "location": "[parameters('location')]"
+    },
+    "logicApp": {
+      "name": "[format('{0}-{1}', format(variables('metadata').longName, 'logapp'), parameters('suffix'))]",
+      "location": "[parameters('location')]"
+    },
+    "recurrence": {
+      "frequency": "[parameters('recurrenceFrequency')]",
+      "interval": "[parameters('recurrenceInterval')]",
+      "startTime": "[parameters('recurrenceStartTime')]",
+      "timeZone": "[parameters('recurrenceTimeZone')]"
+    },
+    "feedDetails": {
+      "feedSource": "[parameters('feedSource')]",
+      "feedUri": "[parameters('feedUri')]",
+      "numberOfFeedItems": "[parameters('feedNumberOfItems')]",
+      "isRandom": "[parameters('feedIsRandom')]",
+      "prefixesExcluded": "[split(coalesce(parameters('feedPrefixesExcluded'), ''), ',')]",
+      "prefixesIncluded": "[split(coalesce(parameters('feedPrefixesIncluded'), ''), ',')]",
+      "postHeader": "[format('{0}', if(parameters('feedIsRandom'), '애저 듣보잡 비디오 다시 보기:', '애저 듣보잡 새 비디오 업로드:'))]"
+    },
+    "feedItemPicker": {
+      "url": "[parameters('feedItemPickerUrl')]",
+      "authKey": "[parameters('feedItemPickerAuthKey')]"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/connections",
+      "apiVersion": "2018-07-01-preview",
+      "name": "[format('{0}', format(variables('apiConnTwitter').connectionName, 'azpls'))]",
+      "location": "[variables('apiConnTwitter').location]",
+      "kind": "V1",
+      "properties": {
+        "displayName": "[format('{0}', format(variables('apiConnTwitter').connectionName, 'azpls'))]",
+        "api": {
+          "id": "[variables('apiConnTwitter').id]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Web/connections",
+      "apiVersion": "2018-07-01-preview",
+      "name": "[format('{0}', format(variables('apiConnTwitter').connectionName, 'justin'))]",
+      "location": "[variables('apiConnTwitter').location]",
+      "kind": "V1",
+      "properties": {
+        "displayName": "[format('{0}', format(variables('apiConnTwitter').connectionName, 'justin'))]",
+        "api": {
+          "id": "[variables('apiConnTwitter').id]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Logic/workflows",
+      "apiVersion": "2019-05-01",
+      "name": "[variables('logicApp').name]",
+      "location": "[variables('logicApp').location]",
+      "properties": {
+        "state": "Enabled",
+        "parameters": {
+          "$connections": {
+            "value": {
+              "twitterAzpls": {
+                "connectionId": "[format('{0}', format(variables('apiConnTwitter').connectionId, 'azpls'))]",
+                "connectionName": "[format('{0}', format(variables('apiConnTwitter').connectionName, 'azpls'))]",
+                "id": "[variables('apiConnTwitter').id]"
+              },
+              "twitterJustin": {
+                "connectionId": "[format('{0}', format(variables('apiConnTwitter').connectionId, 'justin'))]",
+                "connectionName": "[format('{0}', format(variables('apiConnTwitter').connectionName, 'justin'))]",
+                "id": "[variables('apiConnTwitter').id]"
+              }
+            }
+          },
+          "recurrence": {
+            "value": {
+              "frequency": "[variables('recurrence').frequency]",
+              "interval": "[variables('recurrence').interval]",
+              "startTime": "[variables('recurrence').startTime]",
+              "timeZone": "[variables('recurrence').timeZone]"
+            }
+          },
+          "feedDetails": {
+            "value": {
+              "feedSource": "[variables('feedDetails').feedSource]",
+              "feedUri": "[variables('feedDetails').feedUri]",
+              "numberOfFeedItems": "[variables('feedDetails').numberOfFeedItems]",
+              "isRandom": "[variables('feedDetails').isRandom]",
+              "prefixesExcluded": "[variables('feedDetails').prefixesExcluded]",
+              "prefixesIncluded": "[variables('feedDetails').prefixesIncluded]",
+              "postHeader": "[variables('feedDetails').postHeader]"
+            }
+          },
+          "feedItemPicker": {
+            "value": {
+              "url": "[variables('feedItemPicker').url]",
+              "authKey": "[variables('feedItemPicker').authKey]"
+            }
+          }
+        },
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "$connections": {
+              "type": "object",
+              "defaultValue": {}
+            },
+            "recurrence": {
+              "type": "object",
+              "defaultValue": {}
+            },
+            "feedDetails": {
+              "type": "object",
+              "defaultValue": {}
+            },
+            "feedItemPicker": {
+              "type": "object",
+              "defaultValue": {}
+            }
+          },
+          "triggers": {
+            "Run_Everyday_at_Given_Time": {
+              "type": "recurrence",
+              "recurrence": {
+                "frequency": "@parameters('recurrence')['frequency']",
+                "interval": "@parameters('recurrence')['interval']",
+                "startTime": "@parameters('recurrence')['startTime']",
+                "timeZone": "@parameters('recurrence')['timeZone']"
+              }
+            }
+          },
+          "actions": {
+            "Build_Request_Payload": {
+              "type": "Compose",
+              "runAfter": {},
+              "inputs": {
+                "feedSource": "@parameters('feedDetails')['feedSource']",
+                "feedUri": "@parameters('feedDetails')['feedUri']",
+                "numberOfFeedItems": "@parameters('feedDetails')['numberOfFeedItems']",
+                "isRandom": "@parameters('feedDetails')['isRandom']",
+                "prefixesExcluded": "@parameters('feedDetails')['prefixesExcluded']",
+                "prefixesIncluded": "@parameters('feedDetails')['prefixesIncluded']"
+              }
+            },
+            "Fetch_Latest_FeedItem": {
+              "type": "Http",
+              "runAfter": {
+                "Build_Request_Payload": [
+                  "Succeeded"
+                ]
+              },
+              "inputs": {
+                "method": "POST",
+                "uri": "@parameters('feedItemPicker')['url']",
+                "headers": {
+                  "x-functions-key": "@parameters('feedItemPicker')['authKey']"
+                },
+                "body": "@outputs('Build_Request_Payload')"
+              }
+            },
+            "Split_Description": {
+              "type": "Compose",
+              "runAfter": {
+                "Fetch_Latest_FeedItem": [
+                  "Succeeded"
+                ]
+              },
+              "inputs": "@split(body('Fetch_Latest_FeedItem')?['description'], '---')"
+            },
+            "Build_Tweet_Post": {
+              "type": "Compose",
+              "runAfter": {
+                "Split_Description": [
+                  "Succeeded"
+                ]
+              },
+              "inputs": "@{parameters('feedDetails')['postHeader']}\n\n@{trim(first(outputs('Split_Description')))}\n\n@{body('Fetch_Latest_FeedItem')?['link']}"
+            },
+            "Post_Tweet": {
+              "type": "ApiConnection",
+              "runAfter": {
+                "Build_Tweet_Post": [
+                  "Succeeded"
+                ]
+              },
+              "inputs": {
+                "method": "POST",
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['twitterAzpls']['connectionId']"
+                  }
+                },
+                "path": "/posttweet",
+                "queries": {
+                  "tweetText": "@{outputs('Build_Tweet_Post')}"
+                }
+              }
+            },
+            "Retweet": {
+              "type": "ApiConnection",
+              "runAfter": {
+                "Post_Tweet": [
+                  "Succeeded"
+                ]
+              },
+              "inputs": {
+                "method": "POST",
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['twitterJustin']['connectionId']"
+                  }
+                },
+                "path": "/retweet",
+                "queries": {
+                  "tweetId": "@body('Post_Tweet')['TweetId']",
+                  "trimUser": false
+                }
+              }
+            }
+          },
+          "outputs": {}
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/connections', format('{0}', format(variables('apiConnTwitter').connectionName, 'azpls')))]",
+        "[resourceId('Microsoft.Web/connections', format('{0}', format(variables('apiConnTwitter').connectionName, 'justin')))]"
+      ]
+    }
+  ],
+  "outputs": {}
+}
