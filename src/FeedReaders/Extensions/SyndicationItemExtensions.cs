@@ -18,7 +18,13 @@ namespace FeedReaders.Extensions
         /// <returns>Returns the list of <see cref="SyndicationItem"/> instances filtered.</returns>
         public static IEnumerable<SyndicationItem> FilterIncluded(this IEnumerable<SyndicationItem> items, List<string> prefixesIncluded)
         {
-            if (prefixesIncluded == null || !prefixesIncluded.Any())
+            if (prefixesIncluded == null)
+            {
+                return items;
+            }
+
+            prefixesIncluded.Remove(string.Empty);
+            if (!prefixesIncluded.Any())
             {
                 return items;
             }
@@ -36,7 +42,13 @@ namespace FeedReaders.Extensions
         /// <returns>Returns the list of <see cref="SyndicationItem"/> instances filtered.</returns>
         public static IEnumerable<SyndicationItem> FilterExcluded(this IEnumerable<SyndicationItem> items, List<string> prefixesExcluded)
         {
-            if (prefixesExcluded == null || !prefixesExcluded.Any())
+            if (prefixesExcluded == null)
+            {
+                return items;
+            }
+
+            prefixesExcluded.Remove(string.Empty);
+            if (!prefixesExcluded.Any())
             {
                 return items;
             }

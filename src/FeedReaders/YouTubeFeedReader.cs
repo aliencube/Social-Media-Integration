@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel.Syndication;
@@ -30,6 +31,7 @@ namespace FeedReaders
             var items = feed.Items
                             .FilterIncluded(context.PrefixesIncluded)
                             .FilterExcluded(context.PrefixesExcluded)
+                            .OrderByDescending(p => p.PublishDate)
                             .Take(context.NumberOfFeedItems)
                             .ToList();
 
@@ -56,13 +58,15 @@ namespace FeedReaders
             var title = group.Elements().SingleOrDefault(p => p.Name.LocalName == "title").Value;
             var description = group.Elements().SingleOrDefault(p => p.Name.LocalName == "description").Value;
             var thumbnailLink = group.Elements().SingleOrDefault(p => p.Name.LocalName == "thumbnail").Attribute("url").Value;
+            var datePublished = item.PublishDate;
 
             var feedItem = new FeedItem()
             {
                 Title = item.Title.Text,
-                Description = description.Substring(0, description.IndexOf("*") < 0 ? description.IndexOf("\\n") : description.IndexOf("*")),
+                Description = description,
                 Link = item.Links.First().Uri.ToString(),
                 ThumbnailLink = thumbnailLink,
+                DatePublished = datePublished,
             };
 
             return feedItem;

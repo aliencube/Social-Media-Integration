@@ -1,3 +1,5 @@
+using System;
+
 namespace FeedReaders.Models
 {
     /// <summary>
@@ -24,5 +26,10 @@ namespace FeedReaders.Models
         /// Gets or sets the feed item thumbnail URL.
         /// </summary>
         public virtual string ThumbnailLink { get; set; }
+
+        /// <summary>
+        /// Gets or sets the date/time when the feed item was published.
+        /// </summary>
+        public virtual DateTimeOffset DatePublished { get; set; }
     }
 }
