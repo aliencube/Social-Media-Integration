@@ -18,10 +18,10 @@ jobs:
     - name: Checkout the repo
       uses: actions/checkout@v2
 
-    - name: Login to Azure
-      uses: Azure/login@v1.1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
+    # - name: Login to Azure
+    #   uses: Azure/login@v1.1
+    #   with:
+    #     creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
 
     - name: Run Bicep build
       uses: aliencube/bicep-build-actions@v0.1
@@ -40,14 +40,14 @@ jobs:
       run: |
         echo 'Results: ${{ toJSON(fromJSON(steps.armtest.outputs.results)) }}'
 
-    - name: Deploy ARM templates
-      uses: Azure/arm-deploy@v1.0.1
-      with:
-        subscriptionId: ${{ secrets.SUBSCRIPTION_ID_DEV }}
-        resourceGroupName: ${{ secrets.RESOURCE_GROUP_NAME_DEV }}
-        deploymentName: 'socialmedia-amplifier'
-        template: 'resources/azuredeploy.json'
-        parameters: name=${{ secrets.RESOURCE_NAME }} env=${{ secrets.RESOURCE_ENVIRONMENT_DEV }} functionAppEnvironment=${{ secrets.RESOURCE_FUNCTIONAPP_ENVIRONMENT_DEV }}
+    # - name: Deploy ARM templates
+    #   uses: Azure/arm-deploy@v1.0.1
+    #   with:
+    #     subscriptionId: ${{ secrets.SUBSCRIPTION_ID_DEV }}
+    #     resourceGroupName: ${{ secrets.RESOURCE_GROUP_NAME_DEV }}
+    #     deploymentName: 'socialmedia-amplifier'
+    #     template: 'resources/azuredeploy.json'
+    #     parameters: name=${{ secrets.RESOURCE_NAME }} env=${{ secrets.RESOURCE_ENVIRONMENT_DEV }} functionAppEnvironment=${{ secrets.RESOURCE_FUNCTIONAPP_ENVIRONMENT_DEV }}
 
   functionapp_build_test_deploy_dev:
     name: 'DEV: FunctionApp Build, Test & Deploy'
@@ -60,10 +60,10 @@ jobs:
     - name: Checkout the repo
       uses: actions/checkout@v2
 
-    - name: Login to Azure
-      uses: Azure/login@v1.1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
+    # - name: Login to Azure
+    #   uses: Azure/login@v1.1
+    #   with:
+    #     creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
 
     - name: Setup .NET Core SDK
       uses: actions/setup-dotnet@v1
@@ -85,32 +85,32 @@ jobs:
       run: |
         dotnet test . -c Release
 
-    - name: Create FunctionApp artifact
-      shell: bash
-      run: |
-        dotnet publish ${{ env.FUNCTIONAPP_PATH }} -c Release -o published
+    # - name: Create FunctionApp artifact
+    #   shell: bash
+    #   run: |
+    #     dotnet publish ${{ env.FUNCTIONAPP_PATH }} -c Release -o published
 
-    - name: Get FunctionApp publish profile
-      id: publishprofile
-      uses: aliencube/publish-profile-actions@v1
-      env:
-        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS_DEV }}
-      with:
-        resourceGroupName: ${{ secrets.RESOURCE_GROUP_NAME_DEV }}
-        appName: ${{ secrets.RESOURCE_FUNCTIONAPP_NAME_DEV }}
+    # - name: Get FunctionApp publish profile
+    #   id: publishprofile
+    #   uses: aliencube/publish-profile-actions@v1
+    #   env:
+    #     AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS_DEV }}
+    #   with:
+    #     resourceGroupName: ${{ secrets.RESOURCE_GROUP_NAME_DEV }}
+    #     appName: ${{ secrets.RESOURCE_FUNCTIONAPP_NAME_DEV }}
 
-    - name: Deploy FunctionApp
-      uses: Azure/functions-action@v1
-      with:
-        app-name: ${{ secrets.RESOURCE_FUNCTIONAPP_NAME_DEV }}
-        package: published
-        publish-profile: ${{ steps.publishprofile.outputs.profile }}
+    # - name: Deploy FunctionApp
+    #   uses: Azure/functions-action@v1
+    #   with:
+    #     app-name: ${{ secrets.RESOURCE_FUNCTIONAPP_NAME_DEV }}
+    #     package: published
+    #     publish-profile: ${{ steps.publishprofile.outputs.profile }}
 
-    - name: Reset FunctionApp publish profile
-      uses: aliencube/publish-profile-actions@v1
-      env:
-        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS_DEV }}
-      with:
-        resourceGroupName: ${{ secrets.RESOURCE_GROUP_NAME_DEV }}
-        appName: ${{ secrets.RESOURCE_FUNCTIONAPP_NAME_DEV }}
-        reset: true
+    # - name: Reset FunctionApp publish profile
+    #   uses: aliencube/publish-profile-actions@v1
+    #   env:
+    #     AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS_DEV }}
+    #   with:
+    #     resourceGroupName: ${{ secrets.RESOURCE_GROUP_NAME_DEV }}
+    #     appName: ${{ secrets.RESOURCE_FUNCTIONAPP_NAME_DEV }}
+    #     reset: true
