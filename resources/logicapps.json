@@ -36,6 +36,12 @@
     "recurrenceInterval": {
       "type": "int"
     },
+    "recurrenceScheduledHours": {
+      "type": "string"
+    },
+    "recurrenceScheduledMinutes": {
+      "type": "string"
+    },
     "recurrenceStartTime": {
       "type": "string"
     },
@@ -93,6 +99,8 @@
     "recurrence": {
       "frequency": "[parameters('recurrenceFrequency')]",
       "interval": "[parameters('recurrenceInterval')]",
+      "scheduledHours": "[split(parameters('recurrenceScheduledHours'), ',')]",
+      "scheduledMinutes": "[split(parameters('recurrenceScheduledMinutes'), ',')]",
       "startTime": "[parameters('recurrenceStartTime')]",
       "timeZone": "[parameters('recurrenceTimeZone')]"
     },
@@ -163,6 +171,10 @@
             "value": {
               "frequency": "[variables('recurrence').frequency]",
               "interval": "[variables('recurrence').interval]",
+              "schedule": {
+                "hours": "[variables('recurrence').scheduledHours]",
+                "minutes": "[variables('recurrence').scheduledMinutes]"
+              },
               "startTime": "[variables('recurrence').startTime]",
               "timeZone": "[variables('recurrence').timeZone]"
             }
@@ -212,6 +224,10 @@
               "recurrence": {
                 "frequency": "@parameters('recurrence')['frequency']",
                 "interval": "@parameters('recurrence')['interval']",
+                "schedule": {
+                  "hours": "@parameters('recurrence')['schedule']['hours']",
+                  "minutes": "@parameters('recurrence')['schedule']['minutes']"
+                },
                 "startTime": "@parameters('recurrence')['startTime']",
                 "timeZone": "@parameters('recurrence')['timeZone']"
               }

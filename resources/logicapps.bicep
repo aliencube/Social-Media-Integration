@@ -30,6 +30,8 @@ param suffix string {
 // Recurrency
 param recurrenceFrequency string
 param recurrenceInterval int
+param recurrenceScheduledHours string
+param recurrenceScheduledMinutes string
 param recurrenceStartTime string
 param recurrenceTimeZone string = 'Korea Standard Time'
 
@@ -96,6 +98,8 @@ var logicApp = {
 var recurrence = {
     frequency: recurrenceFrequency
     interval: recurrenceInterval
+    scheduledHours: split(recurrenceScheduledHours, ',')
+    scheduledMinutes: split(recurrenceScheduledMinutes, ',')
     startTime: recurrenceStartTime
     timeZone: recurrenceTimeZone
 }
@@ -139,6 +143,10 @@ resource logapp 'Microsoft.Logic/workflows@2019-05-01' = {
                 value: {
                     frequency: recurrence.frequency
                     interval: recurrence.interval
+                    schedule: {
+                        hours: recurrence.scheduledHours
+                        minutes: recurrence.scheduledMinutes
+                    }
                     startTime: recurrence.startTime
                     timeZone: recurrence.timeZone
                 }
@@ -188,6 +196,10 @@ resource logapp 'Microsoft.Logic/workflows@2019-05-01' = {
                     recurrence: {
                         frequency: '@parameters(\'recurrence\')[\'frequency\']'
                         interval: '@parameters(\'recurrence\')[\'interval\']'
+                        schedule: {
+                            hours: '@parameters(\'recurrence\')[\'schedule\'][\'hours\']'
+                            minutes: '@parameters(\'recurrence\')[\'schedule\'][\'minutes\']'
+                        }
                         startTime: '@parameters(\'recurrence\')[\'startTime\']'
                         timeZone: '@parameters(\'recurrence\')[\'timeZone\']'
                     }

@@ -17,6 +17,12 @@
       "recurrenceInterval": {
         "value": 1
       },
+      "recurrenceScheduledHours": {
+        "value": "<COMMA_SEPARATED_HOURS>"
+      },
+      "recurrenceScheduledMinutes": {
+        "value": "<COMMA_SEPARATED_MINUTES>"
+      },
       "recurrenceStartTime": {
         "value": "<yyyy-MM-ddTHH:mm:ssZ>"
       },
